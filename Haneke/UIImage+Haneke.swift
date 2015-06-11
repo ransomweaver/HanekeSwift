@@ -40,11 +40,11 @@ extension UIImage {
         let alphaInfo = CGImageGetAlphaInfo(originalImageRef)
         
         // See: http://stackoverflow.com/questions/23723564/which-cgimagealphainfo-should-we-use
-        var bitmapInfo = originalBitmapInfo
+        var bitmapInfo = UInt8(originalBitmapInfo.rawValue)
         switch (alphaInfo) {
         case .None:
-            bitmapInfo &= ~CGBitmapInfo.AlphaInfoMask
-            bitmapInfo |= CGBitmapInfo(CGImageAlphaInfo.NoneSkipFirst.rawValue)
+            bitmapInfo &= ~UInt8(CGBitmapInfo.AlphaInfoMask.rawValue)
+            bitmapInfo |= UInt8(CGBitmapInfo(rawValue: CGImageAlphaInfo.NoneSkipFirst.rawValue).rawValue)
         case .PremultipliedFirst, .PremultipliedLast, .NoneSkipFirst, .NoneSkipLast:
             break
         case .Only, .Last, .First: // Unsupported
@@ -53,7 +53,7 @@ extension UIImage {
         
         let colorSpace = CGColorSpaceCreateDeviceRGB()
         let pixelSize = CGSizeMake(self.size.width * self.scale, self.size.height * self.scale)
-        if let context = CGBitmapContextCreate(nil, Int(pixelSize.width), Int(pixelSize.height), CGImageGetBitsPerComponent(originalImageRef), 0, colorSpace, bitmapInfo) {
+        if let context = CGBitmapContextCreate(nil, Int(pixelSize.width), Int(pixelSize.height), CGImageGetBitsPerComponent(originalImageRef), 0, colorSpace, UInt32(bitmapInfo)) {
             
             let imageRect = CGRectMake(0, 0, pixelSize.width, pixelSize.height)
             UIGraphicsPushContext(context)
