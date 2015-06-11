@@ -28,10 +28,10 @@ func arrayOfBytes<T>(value:T, length:Int? = nil) -> [UInt8] {
     let totalBytes = length ?? (sizeofValue(value) * 8)
     var v = value
     
-    var valuePointer = UnsafeMutablePointer<T>.alloc(1)
+    let valuePointer = UnsafeMutablePointer<T>.alloc(1)
     valuePointer.memory = value
     
-    var bytesPointer = UnsafeMutablePointer<UInt8>(valuePointer)
+    let bytesPointer = UnsafeMutablePointer<UInt8>(valuePointer)
     var bytes = [UInt8](count: totalBytes, repeatedValue: 0)
     for j in 0..<min(sizeof(T),totalBytes) {
         bytes[totalBytes - 1 - j] = (bytesPointer + j).memory
@@ -45,7 +45,7 @@ func arrayOfBytes<T>(value:T, length:Int? = nil) -> [UInt8] {
 
 extension Int {
     /** Array of bytes with optional padding (little-endian) */
-    public func bytes(_ totalBytes: Int = sizeof(Int)) -> [UInt8] {
+    public func bytes(totalBytes: Int = sizeof(Int)) -> [UInt8] {
         return arrayOfBytes(self, length: totalBytes)
     }
     
@@ -69,7 +69,7 @@ class HashBase {
     }
     
     /** Common part for hash calculation. Prepare header data. */
-    func prepare(_ len:Int = 64) -> NSMutableData {
+    func prepare(len:Int = 64) -> NSMutableData {
         var tmpMessage: NSMutableData = NSMutableData(data: self.message)
         
         // Step 1. Append Padding Bits
@@ -130,7 +130,7 @@ class MD5 : HashBase {
         // Step 2. Append Length a 64-bit representation of lengthInBits
         var lengthInBits = (message.length * 8)
         var lengthBytes = lengthInBits.bytes(64 / 8)
-        tmpMessage.appendBytes(reverse(lengthBytes));
+        tmpMessage.appendBytes(Array(lengthBytes.reverse()));
         
         // Process the message in successive 512-bit chunks:
         let chunkSizeBytes = 512 / 8 // 64
