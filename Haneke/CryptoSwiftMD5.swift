@@ -180,7 +180,7 @@ class MD5 : HashBase {
                 dTemp = D
                 D = C
                 C = B
-                B = B &+ rotateLeft((A &+ F &+ k[j] &+ M[g]), s[j])
+                B = B &+ rotateLeft((A &+ F &+ k[j] &+ M[g]), n: s[j])
                 A = dTemp
             }
             

@@ -110,9 +110,11 @@ public class DiskCache {
         let cachePath = self.path
         dispatch_async(cacheQueue, {
             var error: NSError? = nil
-            if let contents = fileManager.contentsOfDirectoryAtPath(cachePath) as? [String] {
+            var contents : [NSString]
+            do {
+            try contents = fileManager.contentsOfDirectoryAtPath(cachePath) as [String]
                 for pathComponent in contents {
-                    let path = cachePath.stringByAppendingPathComponent(pathComponent)
+                    let path = cachePath.stringByAppendingPathComponent(pathComponent as String)
                     do {
                         try fileManager.removeItemAtPath(path)
                     } catch var error1 as NSError {
@@ -123,8 +125,11 @@ public class DiskCache {
                     }
                 }
                 self.calculateSize()
-            } else {
+            } catch var error2 as NSError {
+                error = error2
                 Log.error("Failed to list directory", error)
+            } catch {
+                fatalError()
             }
         })
     }
@@ -154,9 +159,11 @@ public class DiskCache {
         size = 0
         let cachePath = self.path
         var error : NSError?
-        if let contents = fileManager.contentsOfDirectoryAtPath(cachePath) as? [String] {
+        var contents : [NSString]
+        do {
+            try contents = fileManager.contentsOfDirectoryAtPath(cachePath) as [String]
             for pathComponent in contents {
-                let path = cachePath.stringByAppendingPathComponent(pathComponent)
+                let path = cachePath.stringByAppendingPathComponent(pathComponent as String)
                 do {
                     let attributes : NSDictionary = try fileManager.attributesOfItemAtPath(path)
                     size += Int(attributes.fileSize())
@@ -165,9 +172,11 @@ public class DiskCache {
                     Log.error("Failed to read file size of \(path)", error)
                 }
             }
-        } else {
+        } catch var error2 as NSError {
+            error = error2
             Log.error("Failed to list directory", error)
         }
+        
     }
     
     private func controlCapacity() {
