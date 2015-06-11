@@ -43,8 +43,6 @@ extension UIImage {
         var bitmapInfo = originalBitmapInfo
         switch (alphaInfo) {
         case .None:
-            let initialBits = UInt8(CGBitmapInfo.AlphaInfoMask)
-            let invertedBits = ~initialBits
             bitmapInfo &= ~CGBitmapInfo.AlphaInfoMask
             bitmapInfo |= CGBitmapInfo(CGImageAlphaInfo.NoneSkipFirst.rawValue)
         case .PremultipliedFirst, .PremultipliedLast, .NoneSkipFirst, .NoneSkipLast:
