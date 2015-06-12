@@ -11,7 +11,7 @@ import Foundation
 public class DiskCache {
     
     public class func basePath() -> String {
-        let cachesPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as! String
+        let cachesPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as String
         let hanekePathComponent = HanekeGlobals.Domain
         let basePath = cachesPath.stringByAppendingPathComponent(hanekePathComponent)
         // TODO: Do not recaculate basePath value
@@ -61,7 +61,7 @@ public class DiskCache {
                    succeed(data)
                 })
                 self.updateDiskAccessDateAtPath(path)
-            } catch var error1 as NSError {
+            } catch let error1 as NSError {
                 error = error1
                 if let block = fail {
                     dispatch_async(dispatch_get_main_queue(), {
@@ -89,7 +89,7 @@ public class DiskCache {
             do {
                 try fileManager.removeItemAtPath(path)
                 success = true
-            } catch var error1 as NSError {
+            } catch let error1 as NSError {
                 error = error1
                 success = false
             } catch {
@@ -117,7 +117,7 @@ public class DiskCache {
                     let path = cachePath.stringByAppendingPathComponent(pathComponent as String)
                     do {
                         try fileManager.removeItemAtPath(path)
-                    } catch var error1 as NSError {
+                    } catch let error1 as NSError {
                         error = error1
                         Log.error("Failed to remove path \(path)", error)
                     } catch {
@@ -125,7 +125,7 @@ public class DiskCache {
                     }
                 }
                 self.calculateSize()
-            } catch var error2 as NSError {
+            } catch let error2 as NSError {
                 error = error2
                 Log.error("Failed to list directory", error)
             } catch {
@@ -146,7 +146,7 @@ public class DiskCache {
     }
 
     public func pathForKey(key : String) -> String {
-        var escapedFilename = key.escapedFilename()
+        let escapedFilename = key.escapedFilename()
         let filename = escapedFilename.characters.count < Int(NAME_MAX) ? escapedFilename : key.MD5Filename()
         let keyPath = self.path.stringByAppendingPathComponent(filename)
         return keyPath
@@ -167,12 +167,12 @@ public class DiskCache {
                 do {
                     let attributes : NSDictionary = try fileManager.attributesOfItemAtPath(path)
                     size += Int(attributes.fileSize())
-                } catch var error1 as NSError {
+                } catch let error1 as NSError {
                     error = error1
                     Log.error("Failed to read file size of \(path)", error)
                 }
             }
-        } catch var error2 as NSError {
+        } catch let error2 as NSError {
             error = error2
             Log.error("Failed to list directory", error)
         }
@@ -209,7 +209,7 @@ public class DiskCache {
             do {
                 try data.writeToFile(path, options: NSDataWritingOptions.AtomicWrite)
                 success = true
-            } catch var error1 as NSError {
+            } catch let error1 as NSError {
                 error = error1
                 success = false
             }
@@ -234,7 +234,7 @@ public class DiskCache {
         do {
             try fileManager.setAttributes([NSFileModificationDate : now], ofItemAtPath: path)
             success = true
-        } catch var error1 as NSError {
+        } catch let error1 as NSError {
             error = error1
             success = false
         }
@@ -249,16 +249,15 @@ public class DiskCache {
         let fileManager = NSFileManager.defaultManager()
         do {
             let attributes : NSDictionary = try fileManager.attributesOfItemAtPath(path)
-            let modificationDate = attributes.fileModificationDate()
             let fileSize = attributes.fileSize()
             do {
                 try fileManager.removeItemAtPath(path)
                 self.size -= Int(fileSize)
-            } catch var error1 as NSError {
+            } catch let error1 as NSError {
                 error = error1
                 Log.error("Failed to remove file", error)
             }
-        } catch var error1 as NSError {
+        } catch let error1 as NSError {
             error = error1
             Log.error("Failed to remove file", error)
         }

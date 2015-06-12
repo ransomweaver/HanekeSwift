@@ -52,7 +52,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
             }
         )
         
-        var originalFormat = Format<T>(name: HanekeGlobals.Cache.OriginalFormatName)
+        let originalFormat = Format<T>(name: HanekeGlobals.Cache.OriginalFormatName)
         self.addFormat(originalFormat)
     }
     
@@ -174,7 +174,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
         do {
             try NSFileManager.defaultManager().createDirectoryAtPath(formatPath, withIntermediateDirectories: true, attributes: nil)
             success = true
-        } catch var error1 as NSError {
+        } catch let error1 as NSError {
             error = error1
             success = false
         }
@@ -207,7 +207,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
             }
         }) { data in
             dispatch_async(dispatch_get_main_queue(), {
-                var value = T.convertFromData(data)
+                let value = T.convertFromData(data)
                 if let value = value {
                     let descompressedValue = self.decompressedImageIfNeeded(value)
                     succeed(descompressedValue)

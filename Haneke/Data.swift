@@ -40,7 +40,7 @@ extension String : DataConvertible, DataRepresentable {
     public typealias Result = String
     
     public static func convertFromData(data:NSData) -> Result? {
-        var string = NSString(data: data, encoding: NSUTF8StringEncoding)
+        let string = NSString(data: data, encoding: NSUTF8StringEncoding)
         return string as? Result
     }
     
@@ -82,7 +82,7 @@ public enum JSON : DataConvertible, DataRepresentable {
             default:
                 return nil
             }
-        } catch var error1 as NSError {
+        } catch let error1 as NSError {
             error = error1
             Log.error("Invalid JSON data", error)
             return nil
@@ -108,7 +108,7 @@ public enum JSON : DataConvertible, DataRepresentable {
     
     public var array : [AnyObject]! {
         switch (self) {
-        case .Dictionary(let _):
+        case .Dictionary(_):
             return nil
         case .Array(let array):
             return array
@@ -119,7 +119,7 @@ public enum JSON : DataConvertible, DataRepresentable {
         switch (self) {
         case .Dictionary(let dictionary):
             return dictionary
-        case .Array(let _):
+        case .Array(_):
             return nil
         }
     }

@@ -58,7 +58,7 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
         let data: NSData?
         do {
             data = try NSData(contentsOfFile: self.path, options: NSDataReadingOptions())
-        } catch var error1 as NSError {
+        } catch let error1 as NSError {
             error = error1
             data = nil
         }
